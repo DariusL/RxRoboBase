@@ -1,4 +1,4 @@
-package lt.dariusl.rxfirebaseandroid.test;
+package lt.dariusl.rxfirebase.test;
 
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,9 +13,8 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.subjects.ReplaySubject;
 
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.authAnonymously;
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.observeAuth;
-import static lt.dariusl.rxfirebaseandroid.test.TestUtil.await;
+import static lt.dariusl.rxfirebase.RxFirebase.authAnonymously;
+import static lt.dariusl.rxfirebase.RxFirebase.observeAuth;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -27,7 +26,7 @@ public class AuthenticationTest {
 
     @Test
     public void testAuthAnonymously() throws Exception {
-        AuthResult result = await(authAnonymously(firebaseAuth));
+        AuthResult result = TestUtil.await(authAnonymously(firebaseAuth));
         assertThat(result, notNullValue());
     }
 
@@ -45,10 +44,10 @@ public class AuthenticationTest {
         ReplaySubject<Boolean> userState = ReplaySubject.create();
         isAuthenticated.subscribe(userState);
 
-        await(authAnonymously(firebaseAuth));
+        TestUtil.await(authAnonymously(firebaseAuth));
         firebaseAuth.signOut();
 
-        List<Boolean> observedState = await(userState.take(3).toList());
+        List<Boolean> observedState = TestUtil.await(userState.take(3).toList());
         assertThat(observedState, contains(false, true, false));
     }
 }

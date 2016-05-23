@@ -1,4 +1,4 @@
-package lt.dariusl.rxfirebaseandroid.test;
+package lt.dariusl.rxfirebase.test;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -15,12 +15,12 @@ import rx.observers.Subscribers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.ReplaySubject;
 
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.FirebaseChildEvent;
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.observe;
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.observeChildren;
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.setValue;
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.updateChildren;
-import static lt.dariusl.rxfirebaseandroid.test.TestUtil.await;
+import static lt.dariusl.rxfirebase.RxFirebase.FirebaseChildEvent;
+import static lt.dariusl.rxfirebase.RxFirebase.observe;
+import static lt.dariusl.rxfirebase.RxFirebase.observeChildren;
+import static lt.dariusl.rxfirebase.RxFirebase.setValue;
+import static lt.dariusl.rxfirebase.RxFirebase.updateChildren;
+import static lt.dariusl.rxfirebase.test.TestUtil.await;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

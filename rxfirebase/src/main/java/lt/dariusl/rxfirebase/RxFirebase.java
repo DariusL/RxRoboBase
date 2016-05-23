@@ -1,4 +1,4 @@
-package lt.dariusl.rxfirebaseandroid;
+package lt.dariusl.rxfirebase;
 
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;

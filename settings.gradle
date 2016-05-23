@@ -1,1 +1,1 @@
-include ':rxfirebaseandroid', ':test'
+include ':rxfirebase', ':test'

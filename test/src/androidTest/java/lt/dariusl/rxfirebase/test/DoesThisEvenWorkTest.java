@@ -1,4 +1,4 @@
-package lt.dariusl.rxfirebaseandroid.test;
+package lt.dariusl.rxfirebase.test;
 
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;

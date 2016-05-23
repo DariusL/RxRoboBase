@@ -1,4 +1,4 @@
-package lt.dariusl.rxfirebaseandroid.test;
+package lt.dariusl.rxfirebase.test;
 
 import rx.Observable;
 

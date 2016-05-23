@@ -1,4 +1,4 @@
-package lt.dariusl.rxfirebaseandroid.test;
+package lt.dariusl.rxfirebase.test;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -6,7 +6,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.junit.rules.ExternalResource;
 
-import lt.dariusl.rxfirebaseandroid.RxFirebase;
+import lt.dariusl.rxfirebase.RxFirebase;
 
 public class FirebaseRule extends ExternalResource {
     public final FirebaseAuth auth;

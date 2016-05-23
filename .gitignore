@@ -83,3 +83,6 @@ hs_err_pid*
 /captures
 **/*.iml
 *.class
+
+#keys to the kingdom
+*google-services.json

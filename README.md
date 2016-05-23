@@ -4,17 +4,6 @@ A simple wrapper around most Firebase functions with RxJava. Not all functions a
 
 Since this is my first library, the maven central repo might spontaneously combust.
 
-#Setup
-##Gradle
-    compile 'com.github.dariusl:rxfirebaseandroid:0.5.0'
-##Maven
-    <dependency>
-        <groupId>com.github.dariusl</groupId>
-        <artifactId>rxfirebaseandroid</artifactId>
-        <version>0.5.0</version>
-        <type>aar</type>
-    </dependency>
-
 #License
 Copyright 2015 Darius Lapūnas
 

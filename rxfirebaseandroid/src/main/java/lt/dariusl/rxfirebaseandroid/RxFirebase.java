@@ -229,7 +229,7 @@ public class RxFirebase {
     }
 
     private static <T> Observable<T> toObservable(Func0<? extends Task<T>> factory) {
-        return Observable.create(new TaskOnSubscribe<T>(factory));
+        return Observable.create(new TaskOnSubscribe<>(factory));
     }
 
     private static class TaskOnSubscribe<T> implements Observable.OnSubscribe<T> {

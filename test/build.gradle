@@ -38,3 +38,5 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.4.1'
     compile project(':rxfirebaseandroid')
 }
+
+apply plugin: 'com.google.gms.google-services'

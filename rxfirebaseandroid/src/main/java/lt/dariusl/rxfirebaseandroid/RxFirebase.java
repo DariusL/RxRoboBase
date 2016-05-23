@@ -3,11 +3,6 @@ package lt.dariusl.rxfirebaseandroid;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;

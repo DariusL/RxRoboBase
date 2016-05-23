@@ -3,18 +3,17 @@ package lt.dariusl.rxfirebaseandroid;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
-import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
@@ -130,7 +129,7 @@ public class RxFirebase {
         });
     }
 
-    private static Func1<FirebaseChildEvent, Boolean> makeEventFilter(final @FirebaseChildEvent.EventType int eventType) {
+    public static Func1<FirebaseChildEvent, Boolean> makeEventFilter(final @FirebaseChildEvent.EventType int eventType) {
         return new Func1<FirebaseChildEvent, Boolean>() {
 
             @Override
@@ -181,25 +180,39 @@ public class RxFirebase {
         return subject;
     }
 
-    public static Observable<AuthData> observeAuth(final Firebase firebase){
-        return Observable.create(new Observable.OnSubscribe<AuthData>() {
-            @Override
-            public void call(final Subscriber<? super AuthData> subscriber) {
-                final Firebase.AuthStateListener listener = firebase.addAuthStateListener(new Firebase.AuthStateListener() {
+    public static Observable<FirebaseAuth> observeAuthChange(final FirebaseAuth auth) {
+        return Observable
+                .create(new Observable.OnSubscribe<FirebaseAuth>() {
                     @Override
-                    public void onAuthStateChanged(AuthData authData) {
-                        subscriber.onNext(authData);
-                    }
-                });
+                    public void call(final Subscriber<? super FirebaseAuth> subscriber) {
+                        final FirebaseAuth.AuthStateListener listener = new FirebaseAuth.AuthStateListener() {
+                            @Override
+                            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                                subscriber.onNext(firebaseAuth);
+                            }
+                        };
+                        subscriber.add(Subscriptions.create(new Action0() {
+                            @Override
+                            public void call() {
+                                auth.removeAuthStateListener(listener);
+                            }
+                        }));
 
-                subscriber.add(Subscriptions.create(new Action0() {
-                    @Override
-                    public void call() {
-                        firebase.removeAuthStateListener(listener);
+                        auth.addAuthStateListener(listener);
                     }
-                }));
-            }
-        }).startWith(firebase.getAuth()).distinctUntilChanged();
+                })
+                .startWith(auth);
+    }
+
+    public static Observable<FirebaseUser> observeAuth(FirebaseAuth auth) {
+        return observeAuthChange(auth)
+                .map(new Func1<FirebaseAuth, FirebaseUser>() {
+                    @Override
+                    public FirebaseUser call(FirebaseAuth firebaseAuth) {
+                        return firebaseAuth.getCurrentUser();
+                    }
+                })
+                .distinctUntilChanged();
     }
 
     public static Observable<AuthResult> authAnonymously(final FirebaseAuth firebaseAuth){

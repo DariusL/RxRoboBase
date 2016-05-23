@@ -4,6 +4,20 @@ A simple wrapper around most Firebase functions with RxJava. Not all functions a
 
 Since this is my first library, the maven central repo might spontaneously combust.
 
+#Contribution
+If you wish to run the tests, you'll need an emulator with Google Play Services installed.
+
+You'll also need a Firebase repo. Create one, set the application id to `lt.dariusl.rxfirebase.test` and rules to 
+
+    {
+      "rules": {
+        ".read": "true",
+        ".write": "true"
+      }
+    }
+    
+Put the generated `google-services.json` in `test` dir and it should run.
+
 #License
 Copyright 2015 Darius Lapūnas
 

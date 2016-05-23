@@ -59,6 +59,12 @@ public class RxFirebase {
         public <V> FirebaseChildEvent<V> withValue(V value){
             return new FirebaseChildEvent<>(value, eventType, prevName);
         }
+
+        public static  <V> FirebaseChildEvent<V> cast(
+                FirebaseChildEvent<com.google.firebase.database.DataSnapshot> event,
+                Class<V> cls) {
+            return event.withValue(event.value.getValue(cls));
+        }
     }
 
     public static class FirebaseException extends RuntimeException {
@@ -87,42 +93,40 @@ public class RxFirebase {
         }
     }
 
-    public static Observable<FirebaseChildEvent<DataSnapshot>> observeChildren(final Query ref) {
-        return Observable.create(new Observable.OnSubscribe<FirebaseChildEvent<DataSnapshot>>() {
-
+    public static Observable<FirebaseChildEvent<com.google.firebase.database.DataSnapshot>> observeChildren(final com.google.firebase.database.Query query) {
+        return Observable.create(new Observable.OnSubscribe<FirebaseChildEvent<com.google.firebase.database.DataSnapshot>>() {
             @Override
-            public void call(final Subscriber<? super FirebaseChildEvent<DataSnapshot>> subscriber) {
-                final ChildEventListener listener = ref.addChildEventListener(new ChildEventListener() {
+            public void call(final Subscriber<? super FirebaseChildEvent<com.google.firebase.database.DataSnapshot>> subscriber) {
+                final com.google.firebase.database.ChildEventListener childEventListener = query.addChildEventListener(new com.google.firebase.database.ChildEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String prevName) {
+                    public void onChildAdded(com.google.firebase.database.DataSnapshot dataSnapshot, String prevName) {
                         subscriber.onNext(new FirebaseChildEvent<>(dataSnapshot, FirebaseChildEvent.TYPE_ADD, prevName));
                     }
 
                     @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String prevName) {
+                    public void onChildChanged(com.google.firebase.database.DataSnapshot dataSnapshot, String prevName) {
                         subscriber.onNext(new FirebaseChildEvent<>(dataSnapshot, FirebaseChildEvent.TYPE_CHANGE, prevName));
                     }
 
                     @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    public void onChildRemoved(com.google.firebase.database.DataSnapshot dataSnapshot) {
                         subscriber.onNext(new FirebaseChildEvent<>(dataSnapshot, FirebaseChildEvent.TYPE_REMOVE, null));
                     }
 
                     @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String prevName) {
+                    public void onChildMoved(com.google.firebase.database.DataSnapshot dataSnapshot, String prevName) {
                         subscriber.onNext(new FirebaseChildEvent<>(dataSnapshot, FirebaseChildEvent.TYPE_MOVE, prevName));
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError error) {
-                        subscriber.onError(new FirebaseException(error));
+                    public void onCancelled(DatabaseError databaseError) {
+                        subscriber.onError(new DatabaseException(databaseError));
                     }
                 });
-
                 subscriber.add(Subscriptions.create(new Action0() {
                     @Override
                     public void call() {
-                        ref.removeEventListener(listener);
+                        query.removeEventListener(childEventListener);
                     }
                 }));
             }

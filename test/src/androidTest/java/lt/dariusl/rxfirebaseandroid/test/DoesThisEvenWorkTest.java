@@ -27,10 +27,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
- */
-public class ApplicationTest {
+public class DoesThisEvenWorkTest {
 
     public @Rule PlayServicesRule playServicesRule = new PlayServicesRule();
 

@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,12 +32,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ApplicationTest {
 
-    @Before
-    public void setUp() throws Exception {
-        assertThat(
-                GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(InstrumentationRegistry.getTargetContext()),
-                is(ConnectionResult.SUCCESS));
-    }
+    public @Rule PlayServicesRule playServicesRule = new PlayServicesRule();
 
     @Test
     public void testAuthAnonymously() throws Exception {

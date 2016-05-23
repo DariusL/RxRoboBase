@@ -12,6 +12,7 @@ import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -23,6 +24,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.functions.Action0;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.Subscriptions;
@@ -244,22 +246,44 @@ public class RxFirebase {
     }
 
     public static Observable<AuthResult> authAnonymously(final FirebaseAuth firebaseAuth){
-        return Observable.create(new Observable.OnSubscribe<AuthResult>() {
+        return Observable.create(new TaskOnSubscribe<>(new Func0<Task<AuthResult>>() {
             @Override
-            public void call(final Subscriber<? super AuthResult> subscriber) {
-                firebaseAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            subscriber.onNext(task.getResult());
-                            subscriber.onCompleted();
-                        } else {
-                            subscriber.onError(task.getException());
-                        }
-                    }
-                });
+            public Task<AuthResult> call() {
+                return firebaseAuth.signInAnonymously();
             }
-        });
+        }));
+    }
+
+    public static Observable<AuthResult> authWithCredential(final FirebaseAuth firebaseAuth, final AuthCredential credential) {
+        return Observable.create(new TaskOnSubscribe<>(new Func0<Task<AuthResult>>() {
+            @Override
+            public Task<AuthResult> call() {
+                return firebaseAuth.signInWithCredential(credential);
+            }
+        }));
+    }
+
+    private static class TaskOnSubscribe<T> implements Observable.OnSubscribe<T> {
+        private final Func0<Task<T>> taskFactory;
+
+        private TaskOnSubscribe(Func0<Task<T>> taskFactory) {
+            this.taskFactory = taskFactory;
+        }
+
+        @Override
+        public void call(final Subscriber<? super T> subscriber) {
+            taskFactory.call().addOnCompleteListener(new OnCompleteListener<T>() {
+                @Override
+                public void onComplete(@NonNull Task<T> task) {
+                    if (task.isSuccessful()) {
+                        subscriber.onNext(task.getResult());
+                        subscriber.onCompleted();
+                    } else {
+                        subscriber.onError(task.getException());
+                    }
+                }
+            });
+        }
     }
 
     private static class ObservableAuthResultHandler implements Firebase.AuthResultHandler{

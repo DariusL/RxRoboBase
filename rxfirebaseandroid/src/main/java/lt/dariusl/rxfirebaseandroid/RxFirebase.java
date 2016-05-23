@@ -221,30 +221,6 @@ public class RxFirebase {
         }).startWith(firebase.getAuth()).distinctUntilChanged();
     }
 
-    public static Observable<AuthData> authAnonymously(Firebase firebase){
-        final BehaviorSubject<AuthData> subject = BehaviorSubject.create();
-        firebase.authAnonymously(new ObservableAuthResultHandler(subject));
-        return subject;
-    }
-
-    public static Observable<AuthData> authWithOAuthToken(Firebase firebase, String provider, String token){
-        final BehaviorSubject<AuthData> subject = BehaviorSubject.create();
-        firebase.authWithOAuthToken(provider, token, new ObservableAuthResultHandler(subject));
-        return subject;
-    }
-
-    public static Observable<AuthData> authWithCustomToken(Firebase firebase, String token){
-        final BehaviorSubject<AuthData> subject = BehaviorSubject.create();
-        firebase.authWithCustomToken(token, new ObservableAuthResultHandler(subject));
-        return subject;
-    }
-
-    public static Observable<AuthData> authWithPassword(Firebase firebase, String email, String password) {
-        final BehaviorSubject<AuthData> subject = BehaviorSubject.create();
-        firebase.authWithPassword(email, password, new ObservableAuthResultHandler(subject));
-        return subject;
-    }
-
     public static Observable<AuthResult> authAnonymously(final FirebaseAuth firebaseAuth){
         return Observable.create(new TaskOnSubscribe<>(new Func0<Task<AuthResult>>() {
             @Override
@@ -283,26 +259,6 @@ public class RxFirebase {
                     }
                 }
             });
-        }
-    }
-
-    private static class ObservableAuthResultHandler implements Firebase.AuthResultHandler{
-
-        private final Observer<AuthData> observer;
-
-        private ObservableAuthResultHandler(Observer<AuthData> observer) {
-            this.observer = observer;
-        }
-
-        @Override
-        public void onAuthenticated(AuthData authData) {
-            observer.onNext(authData);
-            observer.onCompleted();
-        }
-
-        @Override
-        public void onAuthenticationError(FirebaseError firebaseError) {
-            observer.onError(new FirebaseException(firebaseError));
         }
     }
 

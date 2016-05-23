@@ -156,34 +156,6 @@ public class RxFirebase {
         return observeChildren(ref).filter(makeEventFilter(FirebaseChildEvent.TYPE_REMOVE));
     }
 
-    public static Observable<DataSnapshot> observe(final Query ref) {
-
-        return Observable.create(new Observable.OnSubscribe<DataSnapshot>() {
-
-            @Override
-            public void call(final Subscriber<? super DataSnapshot> subscriber) {
-                final ValueEventListener listener = ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        subscriber.onNext(dataSnapshot);
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError error) {
-                        subscriber.onError(new FirebaseException(error));
-                    }
-                });
-
-                subscriber.add(Subscriptions.create(new Action0() {
-                    @Override
-                    public void call() {
-                        ref.removeEventListener(listener);
-                    }
-                }));
-            }
-        });
-    }
-
     public static Observable<com.google.firebase.database.DataSnapshot> observe(final com.google.firebase.database.Query query) {
         return Observable.create(new Observable.OnSubscribe<com.google.firebase.database.DataSnapshot>() {
             @Override
@@ -208,32 +180,6 @@ public class RxFirebase {
                 }));
             }
         });
-    }
-
-    public static Observable<DataSnapshot> observeOnce(final Query ref){
-        return Observable.create(new Observable.OnSubscribe<DataSnapshot>() {
-            @Override
-            public void call(final Subscriber<? super DataSnapshot> subscriber) {
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        subscriber.onNext(dataSnapshot);
-                        subscriber.onCompleted();
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                        subscriber.onError(new FirebaseException(firebaseError));
-                    }
-                });
-            }
-        });
-    }
-
-    public static Observable<Firebase> setValue(Firebase firebase, Object value){
-        final BehaviorSubject<Firebase> subject = BehaviorSubject.create();
-        firebase.setValue(value, new ObservableCompletionListener(subject));
-        return subject;
     }
 
     public static Observable<Void> setValue(final DatabaseReference reference, final Object value) {

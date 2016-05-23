@@ -1,8 +1,6 @@
-#RxFirebaseAndroid
+#RxRoboBase
 
 A simple wrapper around most Firebase functions with RxJava. Not all functions are implemented, since this library was filled in as functionality was needed.
-
-Since this is my first library, the maven central repo might spontaneously combust.
 
 #Contribution
 If you wish to run the tests, you'll need an emulator with Google Play Services installed.

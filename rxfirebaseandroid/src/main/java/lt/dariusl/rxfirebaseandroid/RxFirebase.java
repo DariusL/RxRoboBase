@@ -67,19 +67,6 @@ public class RxFirebase {
         }
     }
 
-    public static class FirebaseException extends RuntimeException {
-        private final FirebaseError error;
-
-        public FirebaseException(FirebaseError error) {
-            super("Firebase error " + error, error.toException());
-            this.error = error;
-        }
-
-        public FirebaseError getError() {
-            return error;
-        }
-    }
-
     public static class DatabaseException extends IOException {
         private final DatabaseError error;
 
@@ -268,22 +255,4 @@ public class RxFirebase {
         }
     }
 
-    private static class ObservableCompletionListener implements Firebase.CompletionListener{
-
-        private final Observer<Firebase> observer;
-
-        private ObservableCompletionListener(Observer<Firebase> observer) {
-            this.observer = observer;
-        }
-
-        @Override
-        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-            if (firebaseError == null){
-                observer.onNext(firebase);
-                observer.onCompleted();
-            } else {
-                observer.onError(new FirebaseException(firebaseError));
-            }
-        }
-    }
 }

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="lt.dariusl.rxfirebaseandroid.test">
+    package="lt.dariusl.rxfirebase.test">
 
     <application
         android:label="@string/app_name"

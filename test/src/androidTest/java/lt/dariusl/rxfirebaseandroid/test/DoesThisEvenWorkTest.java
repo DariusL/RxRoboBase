@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 public class DoesThisEvenWorkTest {
 
     public @Rule PlayServicesRule playServicesRule = new PlayServicesRule();
+    public @Rule FirebaseRule firebaseRule = new FirebaseRule(FirebaseAuth.getInstance());
 
     @Test
     public void testAuthAnonymously() throws Exception {

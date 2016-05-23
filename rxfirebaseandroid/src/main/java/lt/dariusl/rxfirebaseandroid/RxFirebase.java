@@ -1,6 +1,7 @@
 package lt.dariusl.rxfirebaseandroid;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
@@ -9,6 +10,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -236,6 +241,25 @@ public class RxFirebase {
         final BehaviorSubject<AuthData> subject = BehaviorSubject.create();
         firebase.authWithPassword(email, password, new ObservableAuthResultHandler(subject));
         return subject;
+    }
+
+    public static Observable<AuthResult> authAnonymously(final FirebaseAuth firebaseAuth){
+        return Observable.create(new Observable.OnSubscribe<AuthResult>() {
+            @Override
+            public void call(final Subscriber<? super AuthResult> subscriber) {
+                firebaseAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            subscriber.onNext(task.getResult());
+                            subscriber.onCompleted();
+                        } else {
+                            subscriber.onError(task.getException());
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private static class ObservableAuthResultHandler implements Firebase.AuthResultHandler{

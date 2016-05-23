@@ -13,11 +13,11 @@ import static org.junit.Assert.assertThat;
 
 public class AuthenticationTest {
     public @Rule PlayServicesRule playServicesRule = new PlayServicesRule();
-    public @Rule FirebaseRule firebaseRule = new FirebaseRule(FirebaseAuth.getInstance());
+    public @Rule FirebaseRule firebaseRule = new FirebaseRule();
 
     @Test
     public void testAuthAnonymously() throws Exception {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = firebaseRule.auth;
 
         AuthResult result = RxFirebase.authAnonymously(firebaseAuth).toBlocking().single();
         assertThat(result, notNullValue());

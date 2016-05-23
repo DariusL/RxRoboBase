@@ -27,12 +27,12 @@ import static org.junit.Assert.*;
 public class WriteTests {
 
     public @Rule PlayServicesRule playServicesRule = new PlayServicesRule();
-    public @Rule FirebaseRule firebaseRule = new FirebaseRule(FirebaseAuth.getInstance());
+    public @Rule FirebaseRule firebaseRule = new FirebaseRule();
 
     @Test
     public void testObserve() throws Exception {
         ReplaySubject<String> values = ReplaySubject.create();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference reference = firebaseRule.reference;
 
         RxFirebase.observe(reference)
                 .map(new Func1<DataSnapshot, String>() {

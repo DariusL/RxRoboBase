@@ -31,11 +31,11 @@ import static org.junit.Assert.assertTrue;
 public class DoesThisEvenWorkTest {
 
     public @Rule PlayServicesRule playServicesRule = new PlayServicesRule();
-    public @Rule FirebaseRule firebaseRule = new FirebaseRule(FirebaseAuth.getInstance());
+    public @Rule FirebaseRule firebaseRule = new FirebaseRule();
 
     @Test
     public void testAuthAnonymously() throws Exception {
-        AuthResult authResult = Tasks.await(FirebaseAuth.getInstance().signInAnonymously(), 5, TimeUnit.SECONDS);
+        AuthResult authResult = Tasks.await(firebaseRule.auth.signInAnonymously(), 5, TimeUnit.SECONDS);
         assertThat(authResult.getUser(), notNullValue());
     }
 }

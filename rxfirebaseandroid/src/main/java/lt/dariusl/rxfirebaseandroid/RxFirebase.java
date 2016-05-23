@@ -178,10 +178,14 @@ public class RxFirebase {
         });
     }
 
-    public static Observable<Firebase> updateChildren(Firebase firebase, Map<String, Object> children){
-        final BehaviorSubject<Firebase> subject = BehaviorSubject.create();
-        firebase.updateChildren(children, new ObservableCompletionListener(subject));
-        return subject;
+    public static Observable<Void> updateChildren(final DatabaseReference reference, final Map<String, ?> children) {
+        return toObservable(new Func0<Task<Void>>() {
+            @Override
+            public Task<Void> call() {
+                //noinspection unchecked
+                return reference.updateChildren((Map<String, Object>) children);
+            }
+        });
     }
 
     public static Observable<FirebaseAuth> observeAuthChange(final FirebaseAuth auth) {

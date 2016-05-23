@@ -14,7 +14,10 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lt.dariusl.rxfirebaseandroid.RxFirebase;
 import rx.Observable;
@@ -84,5 +87,17 @@ public class WriteTests {
         await(setValue(reference.child("foo"), null));
         FirebaseChildEvent<DataSnapshot> remove = events.getValue();
         assertThat(remove.eventType, is(FirebaseChildEvent.TYPE_REMOVE));
+    }
+
+    @Test
+    public void testUpdateChildren() throws Exception {
+        await(setValue(reference.child("foo"), "bar"));
+        await(setValue(reference.child("baz"), "potato"));
+
+        await(updateChildren(reference, Collections.singletonMap("baz", "tomato")));
+
+        DataSnapshot content = await(observe(reference).take(1));
+        assertThat(content.child("foo").getValue(String.class), is("bar"));
+        assertThat(content.child("baz").getValue(String.class), is("tomato"));
     }
 }

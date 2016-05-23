@@ -9,6 +9,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,20 +35,7 @@ public class DoesThisEvenWorkTest {
 
     @Test
     public void testAuthAnonymously() throws Exception {
-        FirebaseDatabase.getInstance().goOnline();
-
-        final CountDownLatch latch = new CountDownLatch(1);
-        FirebaseAuth.getInstance()
-                .signInAnonymously()
-                .addOnCompleteListener(Executors.newSingleThreadExecutor(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        assertThat(task.getResult().getUser(), notNullValue());
-                        latch.countDown();
-                    }
-                });
-
-
-        assertTrue(latch.await(5, TimeUnit.SECONDS));
+        AuthResult authResult = Tasks.await(FirebaseAuth.getInstance().signInAnonymously(), 5, TimeUnit.SECONDS);
+        assertThat(authResult.getUser(), notNullValue());
     }
 }

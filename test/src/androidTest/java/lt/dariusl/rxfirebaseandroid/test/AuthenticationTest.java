@@ -15,6 +15,8 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.subjects.ReplaySubject;
 
+import static lt.dariusl.rxfirebaseandroid.RxFirebase.*;
+import static lt.dariusl.rxfirebaseandroid.test.TestUtil.await;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -26,14 +28,14 @@ public class AuthenticationTest {
 
     @Test
     public void testAuthAnonymously() throws Exception {
-        AuthResult result = RxFirebase.authAnonymously(firebaseAuth).toBlocking().single();
+        AuthResult result = await(authAnonymously(firebaseAuth));
         assertThat(result, notNullValue());
     }
 
     @Test
     public void testObserveAuth() throws Exception {
-        Observable<Boolean> isAuthenticated = RxFirebase
-                .observeAuth(firebaseAuth)
+        Observable<Boolean> isAuthenticated =
+                observeAuth(firebaseAuth)
                 .map(new Func1<FirebaseUser, Boolean>() {
                     @Override
                     public Boolean call(FirebaseUser user) {
@@ -44,10 +46,10 @@ public class AuthenticationTest {
         ReplaySubject<Boolean> userState = ReplaySubject.create();
         isAuthenticated.subscribe(userState);
 
-        RxFirebase.authAnonymously(firebaseAuth).toBlocking().single();
+        await(authAnonymously(firebaseAuth));
         firebaseAuth.signOut();
 
-        List<Boolean> observedState = userState.take(3).toList().toBlocking().single();
+        List<Boolean> observedState = await(userState.take(3).toList());
         assertThat(observedState, contains(false, true, false));
     }
 }

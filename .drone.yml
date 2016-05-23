@@ -1,0 +1,8 @@
+image: android
+env:
+script:
+  - chmod +x gradlew
+  - ./gradlew testDebug
+cache:
+  - /home/.gradle
+notify:

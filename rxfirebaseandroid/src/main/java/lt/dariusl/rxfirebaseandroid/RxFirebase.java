@@ -140,22 +140,6 @@ public class RxFirebase {
         };
     }
 
-    public static Observable<FirebaseChildEvent<DataSnapshot>> observeChildAdded(Query ref) {
-        return observeChildren(ref).filter(makeEventFilter(FirebaseChildEvent.TYPE_ADD));
-    }
-
-    public static Observable<FirebaseChildEvent<DataSnapshot>> observeChildChanged(Query ref) {
-        return observeChildren(ref).filter(makeEventFilter(FirebaseChildEvent.TYPE_CHANGE));
-    }
-
-    public static Observable<FirebaseChildEvent<DataSnapshot>> observeChildMoved(Query ref) {
-        return observeChildren(ref).filter(makeEventFilter(FirebaseChildEvent.TYPE_MOVE));
-    }
-
-    public static Observable<FirebaseChildEvent<DataSnapshot>> observeChildRemoved(Query ref) {
-        return observeChildren(ref).filter(makeEventFilter(FirebaseChildEvent.TYPE_REMOVE));
-    }
-
     public static Observable<com.google.firebase.database.DataSnapshot> observe(final com.google.firebase.database.Query query) {
         return Observable.create(new Observable.OnSubscribe<com.google.firebase.database.DataSnapshot>() {
             @Override

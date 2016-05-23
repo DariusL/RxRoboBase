@@ -224,21 +224,21 @@ public class RxFirebase {
     }
 
     public static Observable<AuthResult> authAnonymously(final FirebaseAuth firebaseAuth){
-        return Observable.create(new TaskOnSubscribe<>(new Func0<Task<AuthResult>>() {
+        return toObservable(new Func0<Task<AuthResult>>() {
             @Override
             public Task<AuthResult> call() {
                 return firebaseAuth.signInAnonymously();
             }
-        }));
+        });
     }
 
     public static Observable<AuthResult> authWithCredential(final FirebaseAuth firebaseAuth, final AuthCredential credential) {
-        return Observable.create(new TaskOnSubscribe<>(new Func0<Task<AuthResult>>() {
+        return toObservable(new Func0<Task<AuthResult>>() {
             @Override
             public Task<AuthResult> call() {
                 return firebaseAuth.signInWithCredential(credential);
             }
-        }));
+        });
     }
 
     private static <T> Observable<T> toObservable(Func0<? extends Task<T>> factory) {

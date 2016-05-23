@@ -15,7 +15,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
@@ -68,6 +71,19 @@ public class RxFirebase {
         }
 
         public FirebaseError getError() {
+            return error;
+        }
+    }
+
+    public static class DatabaseException extends IOException {
+        private final DatabaseError error;
+
+        public DatabaseException(DatabaseError error) {
+            super(error.getMessage() + "\n" + error.getDetails(), error.toException());
+            this.error = error;
+        }
+
+        public DatabaseError getError() {
             return error;
         }
     }
@@ -168,6 +184,32 @@ public class RxFirebase {
         });
     }
 
+    public static Observable<com.google.firebase.database.DataSnapshot> observe(final com.google.firebase.database.Query query) {
+        return Observable.create(new Observable.OnSubscribe<com.google.firebase.database.DataSnapshot>() {
+            @Override
+            public void call(final Subscriber<? super com.google.firebase.database.DataSnapshot> subscriber) {
+                final com.google.firebase.database.ValueEventListener listener = query.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+                    @Override
+                    public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                        subscriber.onNext(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        subscriber.onError(new DatabaseException(databaseError));
+                    }
+                });
+
+                subscriber.add(Subscriptions.create(new Action0() {
+                    @Override
+                    public void call() {
+                        query.removeEventListener(listener);
+                    }
+                }));
+            }
+        });
+    }
+
     public static Observable<DataSnapshot> observeOnce(final Query ref){
         return Observable.create(new Observable.OnSubscribe<DataSnapshot>() {
             @Override
@@ -192,6 +234,15 @@ public class RxFirebase {
         final BehaviorSubject<Firebase> subject = BehaviorSubject.create();
         firebase.setValue(value, new ObservableCompletionListener(subject));
         return subject;
+    }
+
+    public static Observable<Void> setValue(final DatabaseReference reference, final Object value) {
+        return toObservable(new Func0<Task<Void>>() {
+            @Override
+            public Task<Void> call() {
+                return reference.setValue(value);
+            }
+        });
     }
 
     public static Observable<Firebase> updateChildren(Firebase firebase, Map<String, Object> children){
@@ -239,10 +290,14 @@ public class RxFirebase {
         }));
     }
 
-    private static class TaskOnSubscribe<T> implements Observable.OnSubscribe<T> {
-        private final Func0<Task<T>> taskFactory;
+    private static <T> Observable<T> toObservable(Func0<? extends Task<T>> factory) {
+        return Observable.create(new TaskOnSubscribe<T>(factory));
+    }
 
-        private TaskOnSubscribe(Func0<Task<T>> taskFactory) {
+    private static class TaskOnSubscribe<T> implements Observable.OnSubscribe<T> {
+        private final Func0<? extends Task<T>> taskFactory;
+
+        private TaskOnSubscribe(Func0<? extends Task<T>> taskFactory) {
             this.taskFactory = taskFactory;
         }
 

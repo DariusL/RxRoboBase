@@ -18,12 +18,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.functions.Action0;
 import rx.functions.Func0;
 import rx.functions.Func1;
-import rx.subjects.BehaviorSubject;
 import rx.subscriptions.Subscriptions;
 
 /**

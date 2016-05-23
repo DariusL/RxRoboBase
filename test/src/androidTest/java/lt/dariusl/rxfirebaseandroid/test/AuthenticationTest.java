@@ -7,17 +7,16 @@ import com.google.firebase.auth.FirebaseUser;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
-import lt.dariusl.rxfirebaseandroid.RxFirebase;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.subjects.ReplaySubject;
 
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.*;
+import static lt.dariusl.rxfirebaseandroid.RxFirebase.authAnonymously;
+import static lt.dariusl.rxfirebaseandroid.RxFirebase.observeAuth;
 import static lt.dariusl.rxfirebaseandroid.test.TestUtil.await;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 

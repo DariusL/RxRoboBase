@@ -1,36 +1,29 @@
 package lt.dariusl.rxfirebaseandroid.test;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import lt.dariusl.rxfirebaseandroid.RxFirebase;
 import rx.Observable;
 import rx.functions.Func1;
-import rx.observers.Observers;
 import rx.observers.Subscribers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.ReplaySubject;
 
-import static lt.dariusl.rxfirebaseandroid.RxFirebase.*;
-import static lt.dariusl.rxfirebaseandroid.test.TestUtil.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static lt.dariusl.rxfirebaseandroid.RxFirebase.FirebaseChildEvent;
+import static lt.dariusl.rxfirebaseandroid.RxFirebase.observe;
+import static lt.dariusl.rxfirebaseandroid.RxFirebase.observeChildren;
+import static lt.dariusl.rxfirebaseandroid.RxFirebase.setValue;
+import static lt.dariusl.rxfirebaseandroid.RxFirebase.updateChildren;
+import static lt.dariusl.rxfirebaseandroid.test.TestUtil.await;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class WriteTests {
 

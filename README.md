@@ -13,6 +13,8 @@ You'll also need a Firebase repo. Create one, set the application id to `lt.dari
         ".write": "true"
       }
     }
+
+Also, enable anonymous authentication, or the tests will fail with `[ OPERATION_NOT_ALLOWED ]`
     
 Put the generated `google-services.json` in `test` dir and it should run.
 

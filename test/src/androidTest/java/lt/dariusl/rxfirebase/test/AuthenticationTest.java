@@ -9,14 +9,17 @@ import org.junit.Test;
 
 import java.util.List;
 
+import lt.dariusl.rxfirebase.RxFirebase;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.subjects.ReplaySubject;
 
 import static lt.dariusl.rxfirebase.RxFirebase.authAnonymously;
 import static lt.dariusl.rxfirebase.RxFirebase.observeAuth;
+import static lt.dariusl.rxfirebase.test.TestUtil.*;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class AuthenticationTest {
@@ -26,7 +29,7 @@ public class AuthenticationTest {
 
     @Test
     public void testAuthAnonymously() throws Exception {
-        AuthResult result = TestUtil.await(authAnonymously(firebaseAuth));
+        AuthResult result = await(authAnonymously(firebaseAuth));
         assertThat(result, notNullValue());
     }
 
@@ -44,10 +47,23 @@ public class AuthenticationTest {
         ReplaySubject<Boolean> userState = ReplaySubject.create();
         isAuthenticated.subscribe(userState);
 
-        TestUtil.await(authAnonymously(firebaseAuth));
+        await(authAnonymously(firebaseAuth));
         firebaseAuth.signOut();
 
-        List<Boolean> observedState = TestUtil.await(userState.take(3).toList());
+        List<Boolean> observedState = await(userState.take(3).toList());
         assertThat(observedState, contains(false, true, false));
+    }
+
+    @Test
+    public void testSignOutWithUser() throws Exception {
+        await(RxFirebase.authAnonymously(firebaseAuth));
+        await(RxFirebase.signOut(firebaseAuth));
+        assertThat(firebaseAuth.getCurrentUser(), nullValue());
+    }
+
+    @Test
+    public void testSignoutWithoutUser() throws Exception {
+        await(RxFirebase.signOut(firebaseAuth));
+        assertThat(firebaseAuth.getCurrentUser(), nullValue());
     }
 }

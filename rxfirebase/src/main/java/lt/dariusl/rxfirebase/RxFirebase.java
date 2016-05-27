@@ -221,6 +221,28 @@ public class RxFirebase {
         });
     }
 
+    /**
+     * Returns an Observable that signs out on subscription, emits null and completes.
+     */
+    public static Observable<Void> signOut(final FirebaseAuth auth) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                auth.signOut();
+                observeAuth(auth)
+                        .filter(new Func1<FirebaseUser, Boolean>() {
+                            @Override
+                            public Boolean call(FirebaseUser firebaseUser) {
+                                return firebaseUser == null;
+                            }
+                        })
+                        .take(1)
+                        .cast(Void.class)
+                        .subscribe(subscriber);
+            }
+        });
+    }
+
     private static <T> Observable<T> toObservable(Func0<? extends Task<T>> factory) {
         return Observable.create(new TaskOnSubscribe<>(factory));
     }

@@ -188,8 +188,7 @@ public class RxFirebase {
 
                         auth.addAuthStateListener(listener);
                     }
-                })
-                .startWith(auth);
+                });
     }
 
     public static Observable<FirebaseUser> observeAuth(FirebaseAuth auth) {
